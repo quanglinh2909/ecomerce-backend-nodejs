@@ -1,5 +1,5 @@
 @url_dev=http://localhost:3052/v1/api/
-@x-api-key=6e3ea338e86214e0d7798c43d511f31d62870e8cacae40627e40de41ba796c239bcba20a53133a7c7e508e785c7ce7ad18b72c725f99634be361ec9fad55c883
+@x-api-key=cdc029457b6b95f903175179b953584e1639d6ebdfcc8d3c00927fd8a10fc7afc939af84483171ac69791d3611a561f45337538c2233dfe1c9f31a3bd5cf048b
 ### signup
 POST {{url_dev}}shop/signup
 Content-Type: application/json
@@ -7,6 +7,27 @@ x-api-key: {{x-api-key}}
 
 {
     "name": "shop TIPS",
-    "email": "shoptipjs02@gmail1.com",
+    "email": "shoptipjs03@gmail1.com",
     "password": "123456"
+}
+
+### login
+POST {{url_dev}}shop/signin
+Content-Type: application/json
+x-api-key: {{x-api-key}}
+
+{
+ "email": "shoptipjs03@gmail1.com",
+    "password": "123456"
+}
+
+### logout
+POST  {{url_dev}}shop/logout
+Content-Type: application/json
+x-api-key: {{x-api-key}}
+x-client-id: 65a633291924eb6c23776123
+authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWE2MzMyOTE5MjRlYjZjMjM3NzYxMjMiLCJlbWFpbCI6InNob3B0aXBqczAzQGdtYWlsMS5jb20iLCJpYXQiOjE3MDUzOTQyMDcsImV4cCI6MTcwNTU2NzAwN30.4jByYNms7E_F5sRBf7El6WHnhVHlBBGOSCAhLVbl0Pk
+
+{
+
 }

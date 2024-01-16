@@ -14,10 +14,10 @@ class Database {
     this.connect();
   }
   connect(type = "mongo") {
-    if (1 === 1) {
-      mongoose.set("debug", true);
-      mongoose.set("debug", { color: true });
-    }
+    // if (1 === 1) {
+    //   mongoose.set("debug", true);
+    //   mongoose.set("debug", { color: true });
+    // }
     switch (type) {
       case "mongo":
         mongoose
