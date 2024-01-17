@@ -1,13 +1,13 @@
-require("dotenv").config();
-const compression = require("compression");
-const express = require("express");
-const { default: helmet } = require("helmet");
-const morgan = require("morgan");
-const { checkOverload } = require("./helpers/check.connect");
+require('dotenv').config();
+const compression = require('compression');
+const express = require('express');
+const { default: helmet } = require('helmet');
+const morgan = require('morgan');
+const { checkOverload } = require('./helpers/check.connect');
 const app = express();
 
 // init middleware
-app.use(morgan("dev"));
+app.use(morgan('dev'));
 /* 
  * morgan('dev')
  - tra ve theo chuan dev (bat trong moi truong development)
@@ -39,25 +39,26 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //init db
-require("./dbs/init.mongodb");
+require('./dbs/init.mongodb');
 // checkOverload();
 
 // init routes
 
-app.use("/", require("./routes"));
+app.use('/', require('./routes'));
 
 // handle errors
 app.use((req, res, next) => {
-  const error = new Error("Resource not found");
-  error.status = 404;
-  next(error);
+    const error = new Error('Resource not found');
+    error.status = 404;
+    next(error);
 });
 app.use((error, req, res, next) => {
-  // console.log("error", error);
-  return res.status(error.status || 500).json({
-    code: error.status || 500,
-    message: error.message || "Internal Server Error",
-    status: "error",
-  });
+    // console.log("error", error);
+    return res.status(error.status || 500).json({
+        code: error.status || 500,
+        message: error.message || 'Internal Server Error',
+        stack: error.stack,
+        status: 'error'
+    });
 });
 module.exports = app;
