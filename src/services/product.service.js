@@ -9,6 +9,8 @@ const {
     findProduct,
     updateProductById
 } = require('../models/repositories/product.repo');
+const { updateNestedObjectParser } = require('../utils/index');
+const { insertInventory } = require('../models/repositories/inventory.repo');
 // define factory class to create product
 class ProductFactory {
     // static async createProduct(type, payload) {
@@ -29,6 +31,11 @@ class ProductFactory {
         const Product = this.productRegistry[type];
         if (!Product) throw new BadRequestException('Product type not found');
         return new Product(payload).createProduct();
+    }
+    static async updateProduct(type, product_id, payload) {
+        const Product = this.productRegistry[type];
+        if (!Product) throw new BadRequestException('Product type not found');
+        return new Product(payload).updateProduct(product_id);
     }
     static async findAllDraftForShop({ product_shop, limit = 50, skip = 0 }) {
         const query = { product_shop, isDraft: true };
@@ -82,7 +89,14 @@ class Product {
         this.product_attributes = product_attributes;
     }
     async createProduct(product_id) {
-        return await product.create({ ...this, _id: product_id });
+        const newProduct = await product.create({ ...this, _id: product_id });
+        if (!newProduct) throw new BadRequestException('Create product failed');
+        await insertInventory({
+            productId: newProduct._id,
+            shopId: newProduct.product_shop,
+            stock: newProduct.product_quantity
+        });
+        return newProduct;
     }
 
     async updateProduct(productId, bodyUpdate) {
@@ -101,12 +115,13 @@ class Clothing extends Product {
         return newProduct;
     }
 
-    async updateProduct(product_id) {
+    async updateProduct(productId) {
         const objectParams = this;
         if (objectParams.product_attributes) {
-            await updateProductById({ productId, bodyUpdate, model: clothing });
+            const t = objectParams.product_attributes;
+            await updateProductById({ productId, bodyUpdate: updateNestedObjectParser(t), model: clothing });
         }
-        const updateProduct = await super.updateProduct(product_id, objectParams);
+        const updateProduct = await super.updateProduct(productId, updateNestedObjectParser(objectParams));
         return updateProduct;
     }
 }
@@ -121,6 +136,15 @@ class Electronic extends Product {
 
         return newProduct;
     }
+    async updateProduct(productId) {
+        const objectParams = this;
+        if (objectParams.product_attributes) {
+            const t = objectParams.product_attributes;
+            await updateProductById({ productId, bodyUpdate: updateNestedObjectParser(t), model: electronic });
+        }
+        const updateProduct = await super.updateProduct(productId, updateNestedObjectParser(objectParams));
+        return updateProduct;
+    }
 }
 class Furniture extends Product {
     async createProduct() {
@@ -131,6 +155,15 @@ class Furniture extends Product {
         if (!newProduct) throw new BadRequestException('Create product failed');
 
         return newProduct;
+    }
+    async updateProduct(productId) {
+        const objectParams = this;
+        if (objectParams.product_attributes) {
+            const t = objectParams.product_attributes;
+            await updateProductById({ productId, bodyUpdate: updateNestedObjectParser(t), model: furniture });
+        }
+        const updateProduct = await super.updateProduct(productId, updateNestedObjectParser(objectParams));
+        return updateProduct;
     }
 }
 

@@ -51,12 +51,11 @@ const findProduct = async ({ product_id, unSelect }) => {
 };
 
 const updateProductById = async ({ productId, bodyUpdate, model, isNew = true }) => {
-    return await model.findOneAndUpdate({ productId }, bodyUpdate, { new: isNew });
+    return await model.findOneAndUpdate({ _id: productId }, bodyUpdate, { new: isNew });
 };
 
 const publicshProductByShop = async ({ product_id, product_shop }) => {
     const result = await product.findOneAndUpdate({ _id: product_id, product_shop });
-    console.log(result);
     if (!result) throw new NotFoundExeption('Product not found');
     result.isPublished = true;
     result.isDraft = false;
@@ -65,7 +64,6 @@ const publicshProductByShop = async ({ product_id, product_shop }) => {
 };
 const unpublicshProductByShop = async ({ product_id, product_shop }) => {
     const result = await product.findOneAndUpdate({ _id: product_id, product_shop });
-    console.log(result);
     if (!result) throw new NotFoundExeption('Product not found');
     result.isPublished = false;
     result.isDraft = true;

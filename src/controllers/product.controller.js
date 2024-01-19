@@ -69,11 +69,10 @@ class ProductController {
 
     async updateProduct(req, res, next) {
         new OK({
-            message: 'Lấy danh sách sản phẩm thành công',
-            metadata: await ProductService.updateProductById({
+            message: 'Cập nhật sản phẩm thành công',
+            metadata: await ProductService.updateProduct(req?.body?.product_type, req.params.productId, {
                 ...req.body,
-                product_shop: req.user.userId,
-                productId: req.params.productId
+                product_shop: req.user.userId
             })
         }).send(res);
     }
